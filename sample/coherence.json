@@ -1,0 +1,15 @@
+{
+  "unknown_code": "E_UNKNOWN_NODE",
+  "home_state": "S",
+  "nodes": ["n0", "n1", "n2"],
+  "events": [
+    {"at": 0, "kind": "read", "node": "n0"},
+    {"at": 1, "kind": "write", "node": "n1"},
+    {"at": 2, "kind": "read", "node": "n2"},
+    {"at": 3, "kind": "write", "node": "n0"}
+  ],
+  "messages": [
+    {"id": "m1", "kind": "invalidate", "to": "n2", "seq": 8, "at": 4},
+    {"id": "m0", "kind": "invalidate", "to": "n1", "seq": 7, "at": 5}
+  ]
+}

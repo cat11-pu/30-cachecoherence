@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>cachecoherence</title>
+<style>body{font-family:system-ui,sans-serif;margin:24px;max-width:960px}
+textarea{width:100%;height:150px;font-family:ui-monospace,monospace}
+button{padding:6px 12px;margin:8px 8px 8px 0}pre{background:#f6f6f6;padding:10px;border-radius:6px;overflow:auto}
+.ok{color:#0a7}.bad{color:#c00}</style>
+</head>
+<body>
+<h1>cachecoherence 工作台</h1>
+<p>改样例里的读写序列与消息到达顺序再点运行，结果给每次事件后的状态与失效消息数。</p>
+<textarea id="input">{
+  "unknown_code": "E_UNKNOWN_NODE",
+  "home_state": "S",
+  "nodes": ["n0", "n1", "n2"],
+  "events": [
+    {"at": 0, "kind": "read", "node": "n0"},
+    {"at": 1, "kind": "write", "node": "n1"},
+    {"at": 2, "kind": "read", "node": "n2"},
+    {"at": 3, "kind": "write", "node": "n0"}
+  ],
+  "messages": [
+    {"id": "m1", "kind": "invalidate", "to": "n2", "seq": 8, "at": 4},
+    {"id": "m0", "kind": "invalidate", "to": "n1", "seq": 7, "at": 5}
+  ]
+}</textarea>
+<div><button id="run">运行</button><span id="status" class="ok">等待</span></div>
+<pre id="out">还没跑</pre>
+<script type="module">
+import { render } from "./app.js";
+
+document.getElementById("run").addEventListener("click", function () {
+  const status = document.getElementById("status");
+  try {
+    const spec = JSON.parse(document.getElementById("input").value);
+    const result = render(spec);
+    status.className = "ok";
+    status.textContent = "完成";
+    document.getElementById("out").textContent = JSON.stringify(result, null, 1);
+  } catch (error) {
+    status.className = "bad";
+    status.textContent = "出错 " + error.message;
+    document.getElementById("out").textContent = String(error && error.stack ? error.stack : error);
+  }
+});
+</script>
+</body>
+</html>
